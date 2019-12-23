@@ -1,4 +1,4 @@
-package player;
+package entity;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.Spring;
 
 public class Player {
 
@@ -156,7 +155,5 @@ public class Player {
 			jumping = false;
 			falling = true;
 		}
-
 	}
-
 }

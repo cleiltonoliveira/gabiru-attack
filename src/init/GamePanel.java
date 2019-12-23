@@ -1,21 +1,18 @@
 package init;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.IndexColorModel;
 import java.io.IOException;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
-import player.Player;
+import entity.Player;
+import state.GameStateManager;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
 
@@ -25,10 +22,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
 	private Graphics2D g;
 	private BufferedImage image;
-	private BufferedImage background;
 	private Thread thread;
 
-	Player player;
+//	Player player;
+
+	private GameStateManager gsm;
 
 	public GamePanel() {
 		setPreferredSize(new Dimension(WIDTH * IMGSCALE, HEIGHT * IMGSCALE));
@@ -71,26 +69,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
 		g = (Graphics2D) image.getGraphics();
 
-		try {
-			background = ImageIO.read(getClass().getResourceAsStream("/backgrounds/grassbg1.gif"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		gsm = new GameStateManager();
 
-		player = new Player();
-		player.setPosition(100, 100);
 	}
 
 	private void draw() {
 
-		g.drawImage(background, 0, 0, null);
-
-		player.draw(g);
+		gsm.draw(g);
 
 	}
 
 	private void update() {
-		player.update();
+		gsm.update();
+
 	}
 
 	@Override
@@ -99,12 +90,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		player.keyPressed(e.getKeyCode());
+		gsm.keyPressed(e.getKeyCode());
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		player.keyReleased(e.getKeyCode());
+		gsm.keyReleased(e.getKeyCode());
 	}
 
 	@Override
