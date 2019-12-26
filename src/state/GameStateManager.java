@@ -26,25 +26,32 @@ public class GameStateManager implements GameState {
 
 	private void loadState(int state) {
 
-		if (state < NUMOFSTATES && gameStates[state] == null) {
+		if (state < NUMOFSTATES) {
 
 			if (state == MENUSTATE) {
-				gameStates[currentState] = new Menu(this);
+				gameStates[state] = new Menu(this);
 
 			} else if (state == LEVEL1STATE) {
-				gameStates[currentState] = new Level1(this);
+				gameStates[state] = new Level1(this);
+
 			}
 		}
 	}
 
 	@Override
 	public void update() {
-		gameStates[currentState].update();
+		try {
+			gameStates[currentState].update();
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		gameStates[currentState].draw(g);
+		try {
+			gameStates[currentState].draw(g);
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
@@ -58,8 +65,14 @@ public class GameStateManager implements GameState {
 	}
 
 	public void setState(int state) {
-		gameStates[currentState] = null;
-		this.currentState = state;
+
+		int oldState = currentState;
+
 		loadState(state);
+
+		this.currentState = state;
+
+		gameStates[oldState] = null;
+
 	}
 }

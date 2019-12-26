@@ -15,6 +15,7 @@ public class Menu implements GameState {
 	private GameStateManager gsm;
 
 	private Background background;
+	private Background foreground;
 
 	private String options[] = { "JOGAR", "AJUDA", "SAIR" };
 
@@ -27,31 +28,34 @@ public class Menu implements GameState {
 
 	@Override
 	public void init() {
-		background = new Background("/backgrounds/WhiteImage.png");
+		background = new Background("/backgrounds/background_final.gif", 1);
+
+		background.setVector(-0.1, 0);
+
+		foreground = new Background("/backgrounds/front_final.gif");
+
 	}
 
 	@Override
 	public void update() {
 		background.update();
+		foreground.update();
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
 		background.draw(g);
-		// draw title
-		g.setColor(new Color(128, 0, 0));
-		g.setFont(new Font("Century Gothic", Font.PLAIN, 28));
-		g.drawString("Gabiru Attack", 80, 70);
+		foreground.draw(g);
 
 		// draw options
 		g.setFont(new Font("Arial", Font.PLAIN, 12));
 		for (int i = 0; i < options.length; i++) {
 			if (i == currentOption) {
-				g.setColor(Color.BLACK);
+				g.setColor(Color.WHITE);
 			} else {
 				g.setColor(Color.RED);
 			}
-			g.drawString(options[i], 150, 140 + i * 15);
+			g.drawString(options[i], 140, 110 + i * 17);
 		}
 	}
 

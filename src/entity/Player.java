@@ -21,6 +21,9 @@ public class Player {
 	private boolean jumping;
 	private double jumpSpeed;
 
+	private boolean spinning;
+	private boolean spinningRight;
+
 	private double maxJumpSize;
 
 	private boolean falling;
@@ -70,12 +73,24 @@ public class Player {
 
 	public void draw(Graphics2D g) {
 
-		if (facingRight) {
-//			g.drawImage(sprites[0], (int) (x + dx), (int) (y + dy), -tileWidth, tileHeight, null);
-			g.drawImage(animation.getFrame(), (int) (x + dx), (int) (y + dy), -tileWidth, tileHeight, null);
+		if (!spinning) {
+
+			if (facingRight) {
+				g.drawImage(animation.getFrame(), (int) (x + dx), (int) (y + dy), -tileWidth, tileHeight, null);
+			} else {
+				g.drawImage(animation.getFrame(), (int) (x + dx - tileWidth), (int) (y + dy), null);
+			}
+
+		} else if (spinningRight) {
+
+			g.drawImage(animation.getFrame(), (int) ((x + dx)), (int) (y + dy), -tileWidth, tileHeight, null);
+
+			spinningRight = false;
+
 		} else {
-//			g.drawImage(sprites[0], (int) (x + dx - tileWidth), (int) (y + dy), null);
 			g.drawImage(animation.getFrame(), (int) (x + dx - tileWidth), (int) (y + dy), null);
+
+			spinningRight = true;
 		}
 	}
 
@@ -143,6 +158,8 @@ public class Player {
 			right = true;
 		if (key == KeyEvent.VK_UP)
 			jumping = true;
+		if (key == KeyEvent.VK_R)
+			spinning = true;
 
 	}
 
@@ -155,5 +172,7 @@ public class Player {
 			jumping = false;
 			falling = true;
 		}
+		if (key == KeyEvent.VK_R)
+			spinning = false;
 	}
 }

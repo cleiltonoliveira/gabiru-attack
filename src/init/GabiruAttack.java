@@ -9,9 +9,9 @@ public class GabiruAttack {
 
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setContentPane(new GamePanel());
-		jFrame.setLocationRelativeTo(null);
 		jFrame.setResizable(false);
 		jFrame.pack();
+		jFrame.setLocationRelativeTo(null);
 		jFrame.setVisible(true);
 	}
 }
