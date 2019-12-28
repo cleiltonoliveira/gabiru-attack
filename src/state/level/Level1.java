@@ -24,7 +24,7 @@ public class Level1 implements GameState {
 	@Override
 	public void init() {
 
-		background = new Background("/backgrounds/WhiteImage.png");
+		background = new Background("/backgrounds/bg_lv1_alpha1_final.gif");
 
 		player = new Player();
 
