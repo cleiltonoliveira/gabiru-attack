@@ -1,25 +1,37 @@
+/**
+ * @author cleilton
+ * File: Animation.java - Date: Jan 12, 2020
+ */
 package entity;
 
 import java.awt.image.BufferedImage;
 
 public class Animation {
-
-	private BufferedImage frames[];
-
+	private BufferedImage[] frames;
 	private int currentFrame;
 
+	private long startTime;
 	private long delay;
 
-	private long startTime;
+	private boolean playedOnce;
+
+	public Animation() {
+		playedOnce = false;
+	}
 
 	public void setFrames(BufferedImage[] frames) {
 		this.frames = frames;
 		currentFrame = 0;
 		startTime = System.nanoTime();
+		playedOnce = false;
 	}
 
-	public BufferedImage getFrame() {
-		return frames[currentFrame];
+	public void setDelay(long d) {
+		delay = d;
+	}
+
+	public void setFrame(int i) {
+		currentFrame = i;
 	}
 
 	public void update() {
@@ -35,11 +47,23 @@ public class Animation {
 		}
 		if (currentFrame == frames.length) {
 			currentFrame = 0;
+			playedOnce = true;
 		}
+
 	}
 
-	public void setDelay(long delay) {
-		this.delay = delay;
+	public int getFrame() {
+		return currentFrame;
+
 	}
 
+	public BufferedImage getImage() {
+		return frames[currentFrame];
+
+	}
+
+	public boolean hasPlayedOnce() {
+		return playedOnce;
+
+	}
 }

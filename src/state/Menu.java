@@ -32,7 +32,7 @@ public class Menu implements GameState {
 
 		background.setVector(-0.1, 0);
 
-		foreground = new Background("/backgrounds/front_final.gif");
+		foreground = new Background("/backgrounds/front_final.gif", 1);
 
 	}
 

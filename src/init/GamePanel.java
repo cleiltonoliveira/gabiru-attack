@@ -22,9 +22,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
 	private Graphics2D g;
 	private BufferedImage image;
-	private Thread thread;
 
-//	Player player;
+	private Thread thread;
+	private int FPS = 60;
+	private long targetTime = 1000 / FPS;
+	private boolean running;
 
 	private GameStateManager gsm;
 
@@ -38,15 +40,28 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	public void run() {
 
 		init();
+		long start;
+		long elapsed;
+		long wait;
 
-		while (true) {
+		while (running) {
+
+			start = System.nanoTime();
 
 			update();
 			draw();
 			drawToScreen();
 
+			elapsed = System.nanoTime() - start;
+
+			wait = targetTime - elapsed / 1000000;
+
+			if (wait < 0) {
+				wait = 5;
+			}
+
 			try {
-				Thread.sleep(5);
+				Thread.sleep(wait);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -68,6 +83,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 
 		g = (Graphics2D) image.getGraphics();
+
+		running = true;
 
 		gsm = new GameStateManager();
 

@@ -19,14 +19,6 @@ public class Background {
 
 	private double moveScale;
 
-	public Background(String backgroundLocation) {
-		try {
-			image = ImageIO.read(getClass().getResourceAsStream(backgroundLocation));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public Background(String backgroundLocation, double moveScale) {
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream(backgroundLocation));

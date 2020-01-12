@@ -1,56 +1,49 @@
 package entity;
 
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class Player {
+import tileMap.TileMap;
 
-	private static final int STOPPED = 0;
+public class Player extends MapObject {
+
+	private static final int IDLE = 0;
 	private static final int WALKING = 1;
+	private static final int JUMPING = 2;
 
+	// player stuff
+	private int health;
+	private int maxHealth;
+	private boolean dead;
+
+	private boolean flinching;
+	private long flinchTimer;
+
+	// animations
 	private BufferedImage[] sprites;
 
-	private boolean facingRight;
+	public Player(TileMap tileMap) {
+		super(tileMap);
 
-	private double movespeed;
+		width = 32;
+		height = 32;
 
-	private boolean jumping;
-	private double jumpSpeed;
+		// collision box;
+		cwidth = 20;
+		cheight = 20;
 
-	private boolean spinning;
-	private boolean spinningRight;
+		moveSpeed = 0.3;
+		maxSpeed = 1.6;
+		stopSpeed = 0.4;
+		fallSpeed = 0.15;
+		maxFallSpeed = 4.0;
+		jumpStart = -4.8;
+		stopJumpSpeed = 0.3;
 
-	private double maxJumpSize;
-
-	private boolean falling;
-	private double fallSpeed;
-
-	private double x;
-	private double y;
-	private double dx;
-	private double dy;
-
-	private boolean left;
-	private boolean right;
-
-	private int tileWidth;
-	private int tileHeight;
-
-	private Animation animation;
-
-	private int currentAction;
-
-	public Player() {
-		movespeed = 0.4;
-		tileHeight = 32;
-		tileWidth = 32;
-		jumpSpeed = 4.0;
-		maxJumpSize = 40;
-		fallSpeed = 0.3;
+		facingRight = false;
 
 		try {
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/playersprites/gabiru.png"));
@@ -58,12 +51,13 @@ public class Player {
 			sprites = new BufferedImage[3];
 
 			for (int i = 0; i < sprites.length; i++) {
-				sprites[i] = spritesheet.getSubimage(i * tileWidth, 0, tileWidth, tileHeight);
+				sprites[i] = spritesheet.getSubimage(i * width, 0, width, height);
 			}
 
 			animation = new Animation();
-			animation.setFrames(new BufferedImage[] { sprites[0] });
-			animation.setDelay(100);
+			currentAction = IDLE;
+			animation.setFrames(new BufferedImage[] { sprites[IDLE] });
+			animation.setDelay(400000);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -71,108 +65,150 @@ public class Player {
 
 	}
 
-	public void draw(Graphics2D g) {
+	public int getHealth() {
+		return health;
+	}
 
-		if (!spinning) {
+	public int getMaxHealth() {
+		return maxHealth;
+	}
 
-			if (facingRight) {
-				g.drawImage(animation.getFrame(), (int) (x + dx), (int) (y + dy), -tileWidth, tileHeight, null);
-			} else {
-				g.drawImage(animation.getFrame(), (int) (x + dx - tileWidth), (int) (y + dy), null);
+	private void hit(int damage) {
+		if (flinching)
+			return;
+		health -= damage;
+		if (health < 0)
+			health = 0;
+		if (health == 0)
+			dead = true;
+		flinching = true;
+		flinchTimer = System.nanoTime();
+	}
+
+	private void getNextPosition() {
+
+		// movement
+		if (left) {
+
+			dx -= moveSpeed;
+
+			if (dx < -maxSpeed) {
+				dx = -maxSpeed;
 			}
-
-		} else if (spinningRight) {
-
-			g.drawImage(animation.getFrame(), (int) ((x + dx)), (int) (y + dy), -tileWidth, tileHeight, null);
-
-			spinningRight = false;
-
+		} else if (right) {
+			dx += moveSpeed;
+			if (dx > maxSpeed) {
+				dx = maxSpeed;
+			}
 		} else {
-			g.drawImage(animation.getFrame(), (int) (x + dx - tileWidth), (int) (y + dy), null);
+			if (dx > 0) {
 
-			spinningRight = true;
+				dx -= stopSpeed;
+				if (dx < 0) {
+					dx = 0;
+				}
+			} else if (dx < 0) {
+				dx += stopSpeed;
+				if (dx > 0) {
+					dx = 0;
+				}
+			}
+		}
+
+		// jumping
+		if (jumping && !falling) {
+
+			dy = jumpStart; // jumpStart = -4.8;
+			falling = true;
+		}
+
+		// falling
+		if (falling) {
+//			if (dy > 0 && gliding) {
+//				dy += fallSpeed * 0.1;
+//			} else {
+//				dy += fallSpeed; // fallSpeed = 0.15;
+//			}
+			dy += fallSpeed;
+			if (dy > 0) {
+				jumping = false;
+			}
+//			if (dy < 0 && !jumping) {
+//				dy += stopJumpSpeed;
+//			}
+			if (dy > maxFallSpeed) {
+				dy = maxFallSpeed;
+			}
 		}
 	}
 
 	public void update() {
-		updatePosition();
-		animation.update();
-	}
 
-	private void updatePosition() {
+		// update position
+		getNextPosition();
+		checkTileMapCollision();
+		setPosition(xtemp, ytemp);
 
-		if (left || right) {
-			if (currentAction != Player.WALKING) {
+		// check done flinching
+		if (flinching) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if (elapsed > 1000) {
+				flinching = false;
+			}
+		}
 
-				currentAction = Player.WALKING;
+		if (dy < 0) {
+
+			if (currentAction != JUMPING) {
+
+				currentAction = JUMPING;
+//				animation.setFrames(sprites.get(JUMPING));
 				animation.setFrames(sprites);
+				animation.setDelay(-1);
+				width = 32;
 			}
+		} else if (left || right) {
 
-			if (left) {
-				dx -= movespeed;
-				facingRight = false;
-			} else if (right) {
-				facingRight = true;
-				dx += movespeed;
+			if (currentAction != WALKING) {
+				currentAction = WALKING;
+//				animation.setFrames(sprites.get(WALKING));
+				animation.setFrames(sprites);
+				animation.setDelay(40);
+				width = 32;
 			}
-
 		} else {
-			if (currentAction != Player.STOPPED) {
+			if (currentAction != IDLE) {
+				currentAction = IDLE;
 
-				currentAction = Player.STOPPED;
-				animation.setFrames(new BufferedImage[] { sprites[0] });
+//				animation.setFrames(sprites.get(IDLE));
+				animation.setFrames(new BufferedImage[] { sprites[IDLE] });
+
+				animation.setDelay(400);
+				width = 32;
 			}
 		}
 
-		if (jumping && !falling) {
+		animation.update();
 
-			if (dy <= -maxJumpSize) {
-				jumping = false;
-				falling = true;
+		if (right)
+			facingRight = false;
+		if (left)
+			facingRight = true;
+
+	}
+
+	public void draw(Graphics2D g) {
+
+		setMapPosition();
+
+		// draw player
+		if (flinching) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if (elapsed / 100 % 2 == 0) {
+				return;
 			}
-			dy -= jumpSpeed;
 		}
-
-		if (falling) {
-
-			if (dy >= 0) {
-
-				falling = false;
-			}
-
-			dy += fallSpeed;
-		}
-
+		super.draw(g);
 	}
 
-	public void setPosition(double x, double y) {
-		this.x = x;
-		this.y = y;
-	}
-
-	public void keyPressed(int key) {
-
-		if (key == KeyEvent.VK_LEFT)
-			left = true;
-		if (key == KeyEvent.VK_RIGHT)
-			right = true;
-		if (key == KeyEvent.VK_UP)
-			jumping = true;
-		if (key == KeyEvent.VK_R)
-			spinning = true;
-
-	}
-
-	public void keyReleased(int key) {
-		if (key == KeyEvent.VK_LEFT)
-			left = false;
-		if (key == KeyEvent.VK_RIGHT)
-			right = false;
-		if (key == KeyEvent.VK_UP) {
-			jumping = false;
-			falling = true;
-		}
-		if (key == KeyEvent.VK_R)
-			spinning = false;
-	}
 }
