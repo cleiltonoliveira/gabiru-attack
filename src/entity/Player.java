@@ -32,8 +32,8 @@ public class Player extends MapObject {
 		height = 32;
 
 		// collision box;
-		cwidth = 20;
-		cheight = 20;
+		cwidth = 28;
+		cheight = 28;
 
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
@@ -46,7 +46,7 @@ public class Player extends MapObject {
 		facingRight = false;
 
 		try {
-			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/playersprites/gabiru.png"));
+			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/gabiru.png"));
 
 			sprites = new BufferedImage[3];
 
@@ -194,6 +194,8 @@ public class Player extends MapObject {
 			facingRight = false;
 		if (left)
 			facingRight = true;
+
+		System.out.println("x : " + x + "y : " + y);
 
 	}
 

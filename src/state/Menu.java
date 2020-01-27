@@ -28,11 +28,11 @@ public class Menu implements GameState {
 
 	@Override
 	public void init() {
-		background = new Background("/backgrounds/background_final.gif", 1);
+		background = new Background("/res/backgrounds/background_final.gif", 1);
 
 		background.setVector(-0.1, 0);
 
-		foreground = new Background("/backgrounds/front_final.gif", 1);
+		foreground = new Background("/res/backgrounds/front_final.gif", 1);
 
 	}
 
