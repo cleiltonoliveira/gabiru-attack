@@ -3,6 +3,7 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -14,6 +15,8 @@ public class Player extends MapObject {
 	private static final int WALKING = 1;
 	private static final int JUMPING = 2;
 
+	private static final int SCRATCHING = 3;
+
 	// player stuff
 	private int health;
 	private int maxHealth;
@@ -21,6 +24,11 @@ public class Player extends MapObject {
 
 	private boolean flinching;
 	private long flinchTimer;
+
+	// scratch
+	private boolean scratching;
+	private int scratchDamage;
+	private int scratchRange;
 
 	// animations
 	private BufferedImage[] sprites;
@@ -43,7 +51,10 @@ public class Player extends MapObject {
 		jumpStart = -4.8;
 		stopJumpSpeed = 0.3;
 
-		facingRight = false;
+		facingRight = true;
+
+		scratchDamage = 8;
+		scratchRange = 40;
 
 		try {
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/gabiru.png"));
@@ -71,6 +82,39 @@ public class Player extends MapObject {
 
 	public int getMaxHealth() {
 		return maxHealth;
+	}
+
+	public void setScratching() {
+		this.scratching = true;
+	}
+
+	public void checkAttack(ArrayList<Enemy> enemies) {
+
+		// loop through enemies
+		for (int i = 0; i < enemies.size(); i++) {
+
+			Enemy e = enemies.get(i);
+
+			// check scratch attack
+			if (scratching) {
+				if (facingRight) {
+					if (e.getX() > x && e.getX() < x + scratchRange && e.getY() > y - height / 2 && e.getY() < y + height / 2) {
+						e.hit(scratchDamage);
+
+					}
+				} else {
+					if (e.getX() < x && e.getX() > x - (scratchDamage + width) && e.getY() > y - height / 2
+							&& e.getY() < y + height / 2) {
+						e.hit(scratchDamage);
+					}
+				}
+			}
+
+			// check for enemy colisions
+			if (intersects(e)) {
+				hit(e.getDamage());
+			}
+		}
 	}
 
 	private void hit(int damage) {
@@ -149,6 +193,14 @@ public class Player extends MapObject {
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
 
+		// check attack has stopped
+
+		if (currentAction == SCRATCHING) {
+			if (animation.hasPlayedOnce()) {
+				scratching = false;
+			}
+		}
+
 		// check done flinching
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
@@ -156,8 +208,17 @@ public class Player extends MapObject {
 				flinching = false;
 			}
 		}
-
-		if (dy < 0) {
+		// set animation
+		if (scratching) {
+			if (currentAction != SCRATCHING) {
+//				sfx.get("scratch").play();
+				System.out.println("scratching");
+				currentAction = SCRATCHING;
+				animation.setFrames(new BufferedImage[] { sprites[IDLE] });
+				animation.setDelay(50);
+//				width = 60;
+			}
+		} else if (dy < 0) {
 
 			if (currentAction != JUMPING) {
 
@@ -170,6 +231,7 @@ public class Player extends MapObject {
 		} else if (left || right) {
 
 			if (currentAction != WALKING) {
+
 				currentAction = WALKING;
 //				animation.setFrames(sprites.get(WALKING));
 				animation.setFrames(sprites);
@@ -191,14 +253,13 @@ public class Player extends MapObject {
 		animation.update();
 
 		if (right)
-			facingRight = false;
-		if (left)
 			facingRight = true;
-
-		System.out.println("x : " + x + "y : " + y);
+		if (left)
+			facingRight = false;
 
 	}
 
+	@Override
 	public void draw(Graphics2D g) {
 
 		setMapPosition();
@@ -210,7 +271,13 @@ public class Player extends MapObject {
 				return;
 			}
 		}
-		super.draw(g);
-	}
+		if (facingRight) {
 
+			g.drawImage(animation.getImage(), (int) (x + xmap - width / 2 + width), (int) (y + ymap - height / 2), -width, height,
+					null);
+		} else {
+			g.drawImage(animation.getImage(), (int) (x + xmap - width / 2), (int) (y + ymap - height / 2), null);
+
+		}
+	}
 }

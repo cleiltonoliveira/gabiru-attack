@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import audio.AudioPlayer;
 import entity.Enemy;
 import entity.Player;
 import entity.enemies.Bird;
@@ -26,6 +27,8 @@ public class Level1 implements GameState {
 	private ArrayList<Enemy> enemies;
 
 	private GameStateManager gsm;
+
+	private AudioPlayer bgMusic;
 
 	public Level1(GameStateManager gameStateManager) {
 		this.gsm = gameStateManager;
@@ -51,6 +54,9 @@ public class Level1 implements GameState {
 		player.setPosition(100, 100);
 
 		populateEnemies();
+
+		bgMusic = new AudioPlayer("/res/music/bt.mp3");
+		bgMusic.play();
 
 	}
 
@@ -91,6 +97,9 @@ public class Level1 implements GameState {
 
 		// set background
 		background.setPosition(tileMap.getX(), tileMap.getY());
+
+		// attack enemies
+		player.checkAttack(enemies);
 
 		// update all enemies
 		for (int i = 0; i < enemies.size(); i++) {
@@ -136,6 +145,8 @@ public class Level1 implements GameState {
 			player.setDown(true);
 		if (k == KeyEvent.VK_W)
 			player.setJumping(true);
+		if (k == KeyEvent.VK_R)
+			player.setScratching();
 
 	}
 

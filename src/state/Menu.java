@@ -7,12 +7,15 @@ import java.awt.event.KeyEvent;
 
 import javax.xml.namespace.QName;
 
+import audio.AudioPlayer;
 import state.GameStateManager;
 import tileMap.Background;
 
 public class Menu implements GameState {
 
 	private GameStateManager gsm;
+
+	private AudioPlayer bgMusic;
 
 	private Background background;
 	private Background foreground;
@@ -34,6 +37,8 @@ public class Menu implements GameState {
 
 		foreground = new Background("/res/backgrounds/front_final.gif", 1);
 
+//		bgMusic = new AudioPlayer("/res/music/bt2.mp3");
+//		bgMusic.play();
 	}
 
 	@Override
@@ -89,9 +94,10 @@ public class Menu implements GameState {
 	private void select() {
 
 		if (currentOption == 0) {
+
+//			bgMusic.close();
 			// start
 			gsm.setState(GameStateManager.LEVEL1STATE);
-
 		} else if (currentOption == 1) {
 			// help
 		} else if (currentOption == 2) {
