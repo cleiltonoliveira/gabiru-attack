@@ -53,6 +53,8 @@ public class Player extends MapObject {
 
 		facingRight = true;
 
+		health = maxHealth = 5;
+
 		scratchDamage = 8;
 		scratchRange = 40;
 
@@ -82,6 +84,10 @@ public class Player extends MapObject {
 
 	public int getMaxHealth() {
 		return maxHealth;
+	}
+
+	public boolean isDead() {
+		return dead;
 	}
 
 	public void setScratching() {
@@ -121,12 +127,15 @@ public class Player extends MapObject {
 		if (flinching)
 			return;
 		health -= damage;
+
 		if (health < 0)
 			health = 0;
 		if (health == 0)
 			dead = true;
-		flinching = true;
-		flinchTimer = System.nanoTime();
+		else {
+			flinching = true;
+			flinchTimer = System.nanoTime();
+		}
 	}
 
 	private void getNextPosition() {
@@ -212,7 +221,7 @@ public class Player extends MapObject {
 		if (scratching) {
 			if (currentAction != SCRATCHING) {
 //				sfx.get("scratch").play();
-				System.out.println("scratching");
+
 				currentAction = SCRATCHING;
 				animation.setFrames(new BufferedImage[] { sprites[IDLE] });
 				animation.setDelay(50);

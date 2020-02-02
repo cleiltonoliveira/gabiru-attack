@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import audio.AudioPlayer;
 import entity.Enemy;
+import entity.HUD;
 import entity.Player;
 import entity.enemies.Bird;
 import entity.enemies.Slugger;
@@ -29,6 +30,8 @@ public class Level1 implements GameState {
 	private GameStateManager gsm;
 
 	private AudioPlayer bgMusic;
+
+	private HUD hud;
 
 	public Level1(GameStateManager gameStateManager) {
 		this.gsm = gameStateManager;
@@ -55,8 +58,10 @@ public class Level1 implements GameState {
 
 		populateEnemies();
 
-		bgMusic = new AudioPlayer("/res/music/bt.mp3");
-		bgMusic.play();
+		hud = new HUD(player);
+
+//		bgMusic = new AudioPlayer("/res/music/bt.mp3");
+//		bgMusic.play();
 
 	}
 
@@ -64,8 +69,8 @@ public class Level1 implements GameState {
 		enemies = new ArrayList<Enemy>();
 
 		Slugger s;
-		Point[] points = new Point[] { new Point(200, 100), new Point(830, 200), new Point(930, 200), new Point(1480, 200),
-				new Point(1720, 200) };
+		Point[] points = new Point[] { new Point(200, 100), new Point(770, 0), new Point(870, 0), new Point(1460, 190),
+				new Point(1720, 190) };
 
 		Bird bird;
 
@@ -89,29 +94,34 @@ public class Level1 implements GameState {
 
 	@Override
 	public void update() {
-		// update player
-		player.update();
+		if (!player.isDead()) {
+			// update player
+			player.update();
 
-		// update tilemap position
-		tileMap.setPosition(GamePanel.WIDTH / 2 - player.getX(), GamePanel.HEIGHT / 2 - player.getY());
+			// update tilemap position
+			tileMap.setPosition(GamePanel.WIDTH / 2 - player.getX(), GamePanel.HEIGHT / 2 - player.getY());
 
-		// set background
-		background.setPosition(tileMap.getX(), tileMap.getY());
+			// set background
+			background.setPosition(tileMap.getX(), tileMap.getY());
 
-		// attack enemies
-		player.checkAttack(enemies);
+			// attack enemies
+			player.checkAttack(enemies);
 
-		// update all enemies
-		for (int i = 0; i < enemies.size(); i++) {
-			Enemy e = enemies.get(i);
+			// update all enemies
+			for (int i = 0; i < enemies.size(); i++) {
+				Enemy e = enemies.get(i);
 
-			e.update();
-			if (e.isDead()) {
-				enemies.remove(i);
-				i--;
+				e.update();
+				if (e.isDead()) {
+					enemies.remove(i);
+					i--;
 
 //				explosions.add(new Explosion(e.getX(), e.getY()));
+				}
 			}
+		} else {
+
+			gsm.setState(gsm.GAMEOVERSTATE);
 		}
 
 	}
@@ -130,6 +140,9 @@ public class Level1 implements GameState {
 		for (int i = 0; i < enemies.size(); i++) {
 			enemies.get(i).draw(g);
 		}
+
+		// draw hud
+		hud.draw(g);
 	}
 
 	@Override

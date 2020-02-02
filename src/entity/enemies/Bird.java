@@ -16,15 +16,15 @@ public class Bird extends Enemy {
 	public Bird(TileMap tm) {
 		super(tm);
 
-		moveSpeed = 0.3;
-		maxSpeed = 0.3;
+		moveSpeed = 0.6;
+		maxSpeed = 0.6;
 //		fallSpeed = 0.2;
 //		maxFallSpeed = 10.0;
 
-		width = 30;
-		height = 30;
-		cwidth = 20;
-		cheight = 20;
+		width = 32;
+		height = 32;
+		cwidth = 28;
+		cheight = 28;
 
 		health = maxHealth = 2;
 		damage = 1;
@@ -33,12 +33,19 @@ public class Bird extends Enemy {
 
 		try {
 
-			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/res/sprites/enemies/slugger.gif"));
+			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/res/sprites/enemies/carcara.png"));
 
-			sprites = new BufferedImage[3];
+			sprites = new BufferedImage[4];
 
 			for (int i = 0; i < sprites.length; i++) {
-				sprites[i] = spritesheet.getSubimage(i * width, 0, width, height);
+
+				if (i == sprites.length - 1)
+					// getting the second sprite and putting it at the end for complete the bird
+					// movement
+					sprites[3] = sprites[1];
+				else
+					sprites[i] = spritesheet.getSubimage(i * width, 0, width, height);
+
 			}
 
 		} catch (Exception e) {
@@ -104,13 +111,20 @@ public class Bird extends Enemy {
 		animation.update();
 	}
 
+	@Override
 	public void draw(Graphics2D g) {
 //		if (notOnScreen()) {
 //			return;
 //		}
 
 		setMapPosition();
+		if (facingRight) {
 
-		super.draw(g);
+			g.drawImage(animation.getImage(), (int) (x + xmap - width / 2 + width), (int) (y + ymap - height / 2), -width, height,
+					null);
+		} else {
+			g.drawImage(animation.getImage(), (int) (x + xmap - width / 2), (int) (y + ymap - height / 2), null);
+
+		}
 	}
 }

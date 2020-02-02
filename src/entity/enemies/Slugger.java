@@ -28,8 +28,8 @@ public class Slugger extends Enemy {
 
 		width = 30;
 		height = 30;
-		cwidth = 20;
-		cheight = 20;
+		cwidth = 25;
+		cheight = 25;
 
 		health = maxHealth = 2;
 		damage = 1;
