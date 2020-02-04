@@ -60,8 +60,8 @@ public class Level1 implements GameState {
 
 		hud = new HUD(player);
 
-//		bgMusic = new AudioPlayer("/res/music/bt.mp3");
-//		bgMusic.play();
+		bgMusic = new AudioPlayer("/res/music/level1.mp3");
+		bgMusic.play();
 
 	}
 
@@ -119,7 +119,14 @@ public class Level1 implements GameState {
 //				explosions.add(new Explosion(e.getX(), e.getY()));
 				}
 			}
+
+			if (!bgMusic.isActive()) {
+				bgMusic.play();
+			}
+
 		} else {
+
+			bgMusic.close();
 
 			gsm.setState(gsm.GAMEOVERSTATE);
 		}
@@ -160,7 +167,6 @@ public class Level1 implements GameState {
 			player.setJumping(true);
 		if (k == KeyEvent.VK_R)
 			player.setScratching();
-
 	}
 
 	@Override

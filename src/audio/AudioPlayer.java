@@ -48,8 +48,13 @@ public class AudioPlayer {
 		}
 	}
 
+	public boolean isActive() {
+		return clip.isActive();
+	}
+
 	public void close() {
 		stop();
 		clip.close();
+
 	}
 }

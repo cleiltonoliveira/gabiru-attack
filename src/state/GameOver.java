@@ -42,8 +42,9 @@ public class GameOver implements GameState {
 
 		foreground = new Background("/res/backgrounds/front_final.gif", 1);
 
-//		bgMusic = new AudioPlayer("/res/music/bt2.mp3");
-//		bgMusic.play();
+		bgMusic = new AudioPlayer("/res/music/gameover.mp3");
+		bgMusic.play();
+
 		flinching = true;
 		flinchTimer = System.nanoTime();
 	}
@@ -126,7 +127,7 @@ public class GameOver implements GameState {
 
 		if (currentOption == 0) {
 
-//			bgMusic.close();
+			bgMusic.close();
 			// start
 			gsm.setState(GameStateManager.LEVEL1STATE);
 		} else if (currentOption == 1) {
