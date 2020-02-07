@@ -4,9 +4,11 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import audio.AudioPlayer;
 import tileMap.TileMap;
 
 public class Player extends MapObject {
@@ -14,7 +16,6 @@ public class Player extends MapObject {
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
 	private static final int JUMPING = 2;
-
 	private static final int SCRATCHING = 3;
 
 	// player stuff
@@ -31,7 +32,14 @@ public class Player extends MapObject {
 	private int scratchRange;
 
 	// animations
-	private BufferedImage[] sprites;
+	private ArrayList<BufferedImage[]> sprites;
+
+	// num of frames for each action
+	private final int[] numFrames = { 1, 3, 1, 3
+
+	};
+
+	private HashMap<String, AudioPlayer> sfx;
 
 	public Player(TileMap tileMap) {
 		super(tileMap);
@@ -40,8 +48,8 @@ public class Player extends MapObject {
 		height = 32;
 
 		// collision box;
-		cwidth = 28;
-		cheight = 28;
+		cwidth = 24;
+		cheight = 24;
 
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
@@ -61,16 +69,32 @@ public class Player extends MapObject {
 		try {
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/gabiru.png"));
 
-			sprites = new BufferedImage[3];
+			sprites = new ArrayList<BufferedImage[]>();
 
-			for (int i = 0; i < sprites.length; i++) {
-				sprites[i] = spritesheet.getSubimage(i * width, 0, width, height);
+			for (int i = 0; i < numFrames.length; i++) {
+
+				BufferedImage[] bi = new BufferedImage[numFrames[i]];
+
+				// change to attack spritesheet
+				if (i == 2) {
+					spritesheet = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/gabiru_attacking.png"));
+				}
+
+				for (int j = 0; j < numFrames[i]; j++) {
+					bi[j] = spritesheet.getSubimage(j * width, 0, width, height);
+
+				}
+				sprites.add(bi);
 			}
 
 			animation = new Animation();
 			currentAction = IDLE;
-			animation.setFrames(new BufferedImage[] { sprites[IDLE] });
+			animation.setFrames(sprites.get(IDLE));
 			animation.setDelay(400000);
+
+			sfx = new HashMap<String, AudioPlayer>();
+			sfx.put("jump", new AudioPlayer("/res/sfx/jump.mp3"));
+			sfx.put("scratch", new AudioPlayer("/res/sfx/scratch.mp3"));
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -106,7 +130,6 @@ public class Player extends MapObject {
 				if (facingRight) {
 					if (e.getX() > x && e.getX() < x + scratchRange && e.getY() > y - height / 2 && e.getY() < y + height / 2) {
 						e.hit(scratchDamage);
-
 					}
 				} else {
 					if (e.getX() < x && e.getX() > x - (scratchDamage + width) && e.getY() > y - height / 2
@@ -115,7 +138,6 @@ public class Player extends MapObject {
 					}
 				}
 			}
-
 			// check for enemy colisions
 			if (intersects(e)) {
 				hit(e.getDamage());
@@ -168,8 +190,15 @@ public class Player extends MapObject {
 			}
 		}
 
+		// cannot move while attacking, except in air
+		if ((currentAction == SCRATCHING) && !(jumping || falling)) {
+			dx = 0;
+		}
+
 		// jumping
 		if (jumping && !falling) {
+
+			sfx.get("jump").play();
 
 			dy = jumpStart; // jumpStart = -4.8;
 			falling = true;
@@ -205,6 +234,7 @@ public class Player extends MapObject {
 		// check attack has stopped
 
 		if (currentAction == SCRATCHING) {
+
 			if (animation.hasPlayedOnce()) {
 				scratching = false;
 			}
@@ -220,10 +250,10 @@ public class Player extends MapObject {
 		// set animation
 		if (scratching) {
 			if (currentAction != SCRATCHING) {
-//				sfx.get("scratch").play();
 
+				sfx.get("scratch").play();
 				currentAction = SCRATCHING;
-				animation.setFrames(new BufferedImage[] { sprites[IDLE] });
+				animation.setFrames(sprites.get(SCRATCHING));
 				animation.setDelay(50);
 //				width = 60;
 			}
@@ -233,7 +263,7 @@ public class Player extends MapObject {
 
 				currentAction = JUMPING;
 //				animation.setFrames(sprites.get(JUMPING));
-				animation.setFrames(sprites);
+				animation.setFrames(sprites.get(JUMPING));
 				animation.setDelay(-1);
 				width = 32;
 			}
@@ -243,7 +273,7 @@ public class Player extends MapObject {
 
 				currentAction = WALKING;
 //				animation.setFrames(sprites.get(WALKING));
-				animation.setFrames(sprites);
+				animation.setFrames(sprites.get(WALKING));
 				animation.setDelay(40);
 				width = 32;
 			}
@@ -252,7 +282,7 @@ public class Player extends MapObject {
 				currentAction = IDLE;
 
 //				animation.setFrames(sprites.get(IDLE));
-				animation.setFrames(new BufferedImage[] { sprites[IDLE] });
+				animation.setFrames(sprites.get(IDLE));
 
 				animation.setDelay(400);
 				width = 32;

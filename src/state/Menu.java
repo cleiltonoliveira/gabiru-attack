@@ -5,10 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
-import javax.xml.namespace.QName;
-
 import audio.AudioPlayer;
-import state.GameStateManager;
 import tileMap.Background;
 
 public class Menu implements GameState {
@@ -53,12 +50,13 @@ public class Menu implements GameState {
 		foreground.draw(g);
 
 		// draw options
-		g.setFont(new Font("Arial", Font.PLAIN, 12));
+//		g.setFont(new Font("Sans Serif", Font.BOLD, 12));
+		g.setFont(new Font("Sans Serif", Font.BOLD, 12));
 		for (int i = 0; i < options.length; i++) {
 			if (i == currentOption) {
-				g.setColor(Color.WHITE);
+				g.setColor(Color.YELLOW);
 			} else {
-				g.setColor(Color.RED);
+				g.setColor(Color.WHITE);
 			}
 			g.drawString(options[i], 140, 110 + i * 17);
 		}
