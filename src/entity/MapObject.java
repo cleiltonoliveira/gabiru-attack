@@ -153,6 +153,11 @@ public abstract class MapObject {
 		int topTile = (int) (y - cheight / 2) / tileSize; // find the top tile row
 		int bottomTile = (int) (y + cheight / 2 - 1) / tileSize; // find the bottom tile row
 
+		if (topTile < 0 || bottomTile >= tileMap.getNumRows() || leftTile < 0 || rightTile >= tileMap.getNumCols()) {
+			topLeft = topRight = bottomLeft = bottomRight = false;
+			return;
+		}
+
 		int tl = tileMap.getType(topTile, leftTile);
 		int tr = tileMap.getType(topTile, rightTile);
 		int bl = tileMap.getType(bottomTile, leftTile);

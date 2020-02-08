@@ -95,6 +95,7 @@ public class Level1 implements GameState {
 	@Override
 	public void update() {
 		if (!player.isDead()) {
+
 			// update player
 			player.update();
 
@@ -159,11 +160,11 @@ public class Level1 implements GameState {
 			player.setLeft(true);
 		if (k == KeyEvent.VK_RIGHT)
 			player.setRight(true);
-		if (k == KeyEvent.VK_UP)
-			player.setUp(true);
+//		if (k == KeyEvent.VK_UP)
+//			player.setUp(true);
 		if (k == KeyEvent.VK_DOWN)
 			player.setDown(true);
-		if (k == KeyEvent.VK_W)
+		if (k == KeyEvent.VK_W || k == KeyEvent.VK_UP)
 			player.setJumping(true);
 		if (k == KeyEvent.VK_R)
 			player.setScratching();
@@ -175,11 +176,11 @@ public class Level1 implements GameState {
 			player.setLeft(false);
 		if (k == KeyEvent.VK_RIGHT)
 			player.setRight(false);
-		if (k == KeyEvent.VK_UP)
-			player.setUp(false);
+//		if (k == KeyEvent.VK_UP)
+//			player.setUp(false);
 		if (k == KeyEvent.VK_DOWN)
 			player.setDown(false);
-		if (k == KeyEvent.VK_W)
+		if (k == KeyEvent.VK_W || k == KeyEvent.VK_UP)
 			player.setJumping(false);
 	}
 }

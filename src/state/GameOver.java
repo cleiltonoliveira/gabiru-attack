@@ -22,7 +22,7 @@ public class GameOver implements GameState {
 
 	private String gameOver = "Game Over!";
 
-	private String options[] = { "JOGAR", "AJUDA", "SAIR" };
+	private String options[] = { "JOGAR", "MENU", "AJUDA", "SAIR" };
 
 	private int currentOption = 0;
 
@@ -69,12 +69,12 @@ public class GameOver implements GameState {
 //		foreground.draw(g);
 
 		// draw options
-		g.setFont(new Font("Arial", Font.PLAIN, 12));
+		g.setFont(new Font("Sans Serif", Font.BOLD, 12));
 		for (int i = 0; i < options.length; i++) {
 			if (i == currentOption) {
-				g.setColor(Color.RED);
-			} else {
 				g.setColor(Color.WHITE);
+			} else {
+				g.setColor(Color.YELLOW);
 			}
 
 //			g.drawString(options[i], 140, 180 + i * 17);
@@ -91,7 +91,7 @@ public class GameOver implements GameState {
 
 		}
 
-		g.setFont(new Font("Arial", Font.BOLD, 20));
+		g.setFont(new Font("Sans Serif", Font.BOLD, 20));
 		g.setColor(Color.RED);
 		g.drawString(gameOver, 110, 110);
 	}
@@ -131,8 +131,14 @@ public class GameOver implements GameState {
 			// start
 			gsm.setState(GameStateManager.LEVEL1STATE);
 		} else if (currentOption == 1) {
-			// help
+
+			bgMusic.close();
+			gsm.setState(GameStateManager.MENUSTATE);
+
 		} else if (currentOption == 2) {
+			// help
+
+		} else if (currentOption == 3) {
 			// exit
 			System.exit(0);
 		}

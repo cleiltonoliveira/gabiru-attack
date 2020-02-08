@@ -35,7 +35,7 @@ public class Player extends MapObject {
 	private ArrayList<BufferedImage[]> sprites;
 
 	// num of frames for each action
-	private final int[] numFrames = { 1, 3, 1, 3
+	private final int[] numFrames = { 1, 4, 1, 3
 
 	};
 
@@ -48,8 +48,8 @@ public class Player extends MapObject {
 		height = 32;
 
 		// collision box;
-		cwidth = 24;
-		cheight = 24;
+		cwidth = 26;
+		cheight = 26;
 
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
@@ -76,12 +76,15 @@ public class Player extends MapObject {
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 
 				// change to attack spritesheet
-				if (i == 2) {
+				if (i == SCRATCHING - 1) {
 					spritesheet = ImageIO.read(getClass().getResourceAsStream("/res/sprites/player/gabiru_attacking.png"));
 				}
 
 				for (int j = 0; j < numFrames[i]; j++) {
-					bi[j] = spritesheet.getSubimage(j * width, 0, width, height);
+
+					int n = (j == 3 ? width : j * width);
+
+					bi[j] = spritesheet.getSubimage(n, 0, width, height);
 
 				}
 				sprites.add(bi);
@@ -116,6 +119,12 @@ public class Player extends MapObject {
 
 	public void setScratching() {
 		this.scratching = true;
+	}
+
+	public void setFlinching(boolean flinching) {
+		this.flinching = flinching;
+
+		flinchTimer = System.nanoTime();
 	}
 
 	public void checkAttack(ArrayList<Enemy> enemies) {
@@ -226,6 +235,23 @@ public class Player extends MapObject {
 
 	public void update() {
 
+		if (notOnScreen()) {
+
+			flinching = false;
+			hit(1);
+
+			if (isDead() == false) {
+
+				tileMap.setPosition(0, 0);
+				setPosition(100, 100);
+				setFlinching(true);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		// update position
 		getNextPosition();
 		checkTileMapCollision();
@@ -243,7 +269,7 @@ public class Player extends MapObject {
 		// check done flinching
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed > 1000) {
+			if (elapsed > 2000) {
 				flinching = false;
 			}
 		}
