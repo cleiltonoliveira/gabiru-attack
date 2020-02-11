@@ -22,7 +22,7 @@ public class GameOver implements GameState {
 
 	private String gameOver = "Game Over!";
 
-	private String options[] = { "JOGAR", "MENU", "AJUDA", "SAIR" };
+	private String options[] = { "JOGAR", "MENU", "SAIR" };
 
 	private int currentOption = 0;
 
@@ -136,9 +136,7 @@ public class GameOver implements GameState {
 			gsm.setState(GameStateManager.MENUSTATE);
 
 		} else if (currentOption == 2) {
-			// help
 
-		} else if (currentOption == 3) {
 			// exit
 			System.exit(0);
 		}

@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 import audio.AudioPlayer;
 import tileMap.Background;
 
-public class Menu implements GameState {
+public class HelpState implements GameState {
 
 	private GameStateManager gsm;
 
@@ -18,11 +18,11 @@ public class Menu implements GameState {
 	private Background background;
 	private Background foreground;
 
-	private String options[] = { "JOGAR", "AJUDA", "SAIR" };
+	private String options[] = { "MENU", "SAIR" };
 
 	private int currentOption = 0;
 
-	public Menu(GameStateManager gameStateManager) {
+	public HelpState(GameStateManager gameStateManager) {
 		this.gsm = gameStateManager;
 		init();
 	}
@@ -43,9 +43,6 @@ public class Menu implements GameState {
 	public void update() {
 		background.update();
 		foreground.update();
-		if (!bgMusic.isActive()) {
-			bgMusic.play();
-		}
 	}
 
 	@Override
@@ -54,16 +51,42 @@ public class Menu implements GameState {
 
 		foreground.draw(g);
 
+		AlphaComposite alcom = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f);
+
+		g.setComposite(alcom);
+
+		g.setPaint(Color.black);
+
+		g.fillRoundRect(10, 10, 300, 220, 10, 10);
+
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
 		// draw options
-//		g.setFont(new Font("Sans Serif", Font.BOLD, 12));
 		g.setFont(new Font("Sans Serif", Font.BOLD, 12));
+
+		g.setColor(Color.WHITE);
+
+		g.drawString("CONTROLES DO JOGO", 90, 40);
+
+		g.setFont(new Font("Arial", Font.PLAIN, 9));
+
+		String controls[] = { "SETA PARA CIMA --- PULAR",
+
+				"SETA ESQUERDA --- ANDAR PARA ESQUERDA", "SETA DIREITA --- ANDAR PARA DIREITA" };
+
+		for (int i = 0; i < controls.length; i++) {
+			g.drawString(controls[i], 40, 80 + i * 10);
+		}
+
+		g.setFont(new Font("Sans Serif", Font.BOLD, 12));
+
 		for (int i = 0; i < options.length; i++) {
 			if (i == currentOption) {
 				g.setColor(Color.YELLOW);
 			} else {
 				g.setColor(Color.WHITE);
 			}
-			g.drawString(options[i], 140, 110 + i * 17);
+			g.drawString(options[i], 240, 110 + i * 17);
 		}
 	}
 
@@ -96,17 +119,18 @@ public class Menu implements GameState {
 
 	private void select() {
 
+//		if (currentOption == 0) {
+//
+//			bgMusic.close();
+//			// start
+//			gsm.setState(GameStateManager.LEVEL1STATE);
+//		} else 
+
 		if (currentOption == 0) {
-
 			bgMusic.close();
-			// start
-			gsm.setState(GameStateManager.LEVEL1STATE);
-		} else if (currentOption == 1) {
-			bgMusic.close();
-			gsm.setState(GameStateManager.HELPSTATE);
-
+			gsm.setState(GameStateManager.MENUSTATE);
 			// help
-		} else if (currentOption == 2) {
+		} else if (currentOption == 1) {
 			// exit
 			System.exit(0);
 		}
