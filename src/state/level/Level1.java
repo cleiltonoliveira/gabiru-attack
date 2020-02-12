@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import audio.AudioPlayer;
 import entity.Enemy;
+import entity.Explosion;
 import entity.HUD;
 import entity.Player;
 import entity.enemies.Bird;
@@ -26,6 +27,8 @@ public class Level1 implements GameState {
 	private Player player;
 
 	private ArrayList<Enemy> enemies;
+
+	private ArrayList<Explosion> explosions;
 
 	private GameStateManager gsm;
 
@@ -58,6 +61,8 @@ public class Level1 implements GameState {
 
 		populateEnemies();
 
+		explosions = new ArrayList<Explosion>();
+
 		hud = new HUD(player);
 
 		bgMusic = new AudioPlayer("/res/music/level1.mp3");
@@ -81,7 +86,7 @@ public class Level1 implements GameState {
 			enemies.add(s);
 		}
 
-		points = new Point[] { new Point(680, 40), new Point(2150, 40) };
+		points = new Point[] { new Point(680, 40), new Point(2150, 40), new Point(2150, 170) };
 
 		for (int i = 0; i < points.length; i++) {
 
@@ -117,7 +122,17 @@ public class Level1 implements GameState {
 					enemies.remove(i);
 					i--;
 
-//				explosions.add(new Explosion(e.getX(), e.getY()));
+					explosions.add(new Explosion(e.getX(), e.getY()));
+				}
+			}
+
+			// update explosions
+			for (int i = 0; i < explosions.size(); i++) {
+				explosions.get(i).update();
+
+				if (explosions.get(i).shouldRemove()) {
+					explosions.remove(i);
+					i--;
 				}
 			}
 
@@ -147,6 +162,13 @@ public class Level1 implements GameState {
 		// draw enemies
 		for (int i = 0; i < enemies.size(); i++) {
 			enemies.get(i).draw(g);
+		}
+
+		// draw explosions
+		for (int i = 0; i < explosions.size(); i++) {
+
+			explosions.get(i).setMapPosition((int) tileMap.getX(), (int) tileMap.getY());
+			explosions.get(i).draw(g);
 		}
 
 		// draw hud
