@@ -11,14 +11,14 @@ import javax.imageio.ImageIO;
 
 import tileMap.TileMap;
 
-public class FireBall extends MapObject {
+public class Hurricane extends MapObject {
 
 	private boolean hit;
 	private boolean remove;
 	private BufferedImage[] sprites;
 	private BufferedImage[] hitSprites;
 
-	public FireBall(TileMap tm, boolean right) {
+	public Hurricane(TileMap tm, boolean right) {
 		super(tm);
 
 		facingRight = true;

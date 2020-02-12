@@ -19,6 +19,10 @@ public class HelpState implements GameState {
 	private Background foreground;
 
 	private String options[] = { "MENU", "SAIR" };
+	private String controls[] = { "SETA PARA CIMA  ---  PULAR",
+
+			"SETA ESQUERDA  ---  ANDAR PARA ESQUERDA", "SETA DIREITA      ---  ANDAR PARA DIREITA",
+			"F                       ---  ATAQUE FURACÂO" };
 
 	private int currentOption = 0;
 
@@ -67,12 +71,7 @@ public class HelpState implements GameState {
 		g.setColor(Color.WHITE);
 
 		g.drawString("CONTROLES DO JOGO", 90, 40);
-
-		g.setFont(new Font("Arial", Font.PLAIN, 9));
-
-		String controls[] = { "SETA PARA CIMA --- PULAR",
-
-				"SETA ESQUERDA --- ANDAR PARA ESQUERDA", "SETA DIREITA --- ANDAR PARA DIREITA" };
+		g.setFont(new Font("Dialog", Font.PLAIN, 8));
 
 		for (int i = 0; i < controls.length; i++) {
 			g.drawString(controls[i], 40, 80 + i * 10);
@@ -86,7 +85,8 @@ public class HelpState implements GameState {
 			} else {
 				g.setColor(Color.WHITE);
 			}
-			g.drawString(options[i], 240, 110 + i * 17);
+			g.drawString(options[i], 40 + i * 210, 220);
+//			g.drawString(options[i], 240, 110 + i * 17);
 		}
 	}
 
@@ -97,14 +97,14 @@ public class HelpState implements GameState {
 			select();
 		}
 
-		if (key == KeyEvent.VK_UP) {
+		if (key == KeyEvent.VK_UP || key == KeyEvent.VK_RIGHT) {
 			currentOption--;
 			if (currentOption == -1) {
 				currentOption = options.length - 1;
 			}
 
 		}
-		if (key == KeyEvent.VK_DOWN) {
+		if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_LEFT) {
 			currentOption++;
 			if (currentOption == options.length) {
 				currentOption = 0;

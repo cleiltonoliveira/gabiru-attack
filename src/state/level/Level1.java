@@ -191,7 +191,7 @@ public class Level1 implements GameState {
 		if (k == KeyEvent.VK_R)
 			player.setScratching();
 		if (k == KeyEvent.VK_F)
-			player.setFiring();
+			player.setHurricanning();
 	}
 
 	@Override

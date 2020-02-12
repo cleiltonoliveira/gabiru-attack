@@ -21,18 +21,18 @@ public class Player extends MapObject {
 	// player stuff
 	private int health;
 	private int maxHealth;
-	private int fire;
-	private int maxFire;
+	private int hurricane;
+	private int maxHurricane;
 	private boolean dead;
 
 	private boolean flinching;
 	private long flinchTimer;
 
 	// fireball
-	private boolean firing;
-	private int fireCost;
-	private int fireBallDamage;
-	private ArrayList<FireBall> fireBalls;
+	private boolean hurricanning;
+	private int hurricaneCost;
+	private int hurricaneBallDamage;
+	private ArrayList<Hurricane> hurricanes;
 
 	// scratch
 	private boolean scratching;
@@ -71,12 +71,12 @@ public class Player extends MapObject {
 
 		health = maxHealth = 5;
 
-		fire = maxFire = 2500;
+		hurricane = maxHurricane = 2500;
 
-		fireCost = 200;
-		fireBallDamage = 5;
+		hurricaneCost = 200;
+		hurricaneBallDamage = 5;
 
-		fireBalls = new ArrayList<FireBall>();
+		hurricanes = new ArrayList<Hurricane>();
 
 		scratchDamage = 8;
 		scratchRange = 40;
@@ -128,16 +128,16 @@ public class Player extends MapObject {
 		return maxHealth;
 	}
 
-	public int getFire() {
-		return fire;
+	public int getHurricane() {
+		return hurricane;
 	}
 
-	public int getMaxFire() {
-		return maxFire;
+	public int getMaxHurricane() {
+		return maxHurricane;
 	}
 
-	public void setFiring() {
-		firing = true;
+	public void setHurricanning() {
+		hurricanning = true;
 	}
 
 	public boolean isDead() {
@@ -175,13 +175,13 @@ public class Player extends MapObject {
 				}
 			}
 
-			// fireballs
-			for (int j = 0; j < fireBalls.size(); j++) {
+			// hurricanes
+			for (int j = 0; j < hurricanes.size(); j++) {
 
-				if (fireBalls.get(j).intersects(e)) {
+				if (hurricanes.get(j).intersects(e)) {
 
-					e.hit(fireBallDamage);
-					fireBalls.get(j).setHit();
+					e.hit(hurricaneBallDamage);
+					hurricanes.get(j).setHit();
 					break;
 				}
 			}
@@ -307,30 +307,31 @@ public class Player extends MapObject {
 
 		if (currentAction == FIREBALL) {
 			if (animation.hasPlayedOnce()) {
-				firing = false;
+				hurricanning = false;
 			}
 		}
 
-		// fireball attack
-		fire += 1;
-		if (fire > maxFire) {
-			fire = maxFire;
+		// hurricane attack
+		hurricane += 1;
+		if (hurricane > maxHurricane) {
+			hurricane = maxHurricane;
 		}
-		if (firing && currentAction != FIREBALL) {
-			if (fire > fireCost) {
-				fire -= fireCost;
-				FireBall fb = new FireBall(tileMap, facingRight);
+		if (hurricanning && currentAction != FIREBALL) {
+			if (hurricane > hurricaneCost) {
+				hurricane -= hurricaneCost;
+
+				Hurricane fb = new Hurricane(tileMap, facingRight);
 				fb.setPosition(x, y);
-				fireBalls.add(fb);
+				hurricanes.add(fb);
 			}
 		}
 
-		// update fireballs
-		for (int i = 0; i < fireBalls.size(); i++) {
-			fireBalls.get(i).update();
+		// update hurricanes
+		for (int i = 0; i < hurricanes.size(); i++) {
+			hurricanes.get(i).update();
 
-			if (fireBalls.get(i).shouldRemove()) {
-				fireBalls.remove(i);
+			if (hurricanes.get(i).shouldRemove()) {
+				hurricanes.remove(i);
 				i--;
 			}
 		}
@@ -353,7 +354,7 @@ public class Player extends MapObject {
 //				width = 60;
 			}
 
-		} else if (firing) {
+		} else if (hurricanning) {
 			if (currentAction != FIREBALL) {
 				currentAction = FIREBALL;
 //					animation.setFrames(sprites.get(FIREBALL));
@@ -412,8 +413,8 @@ public class Player extends MapObject {
 		setMapPosition();
 
 		// draw fireballs
-		for (int i = 0; i < fireBalls.size(); i++) {
-			fireBalls.get(i).draw(g);
+		for (int i = 0; i < hurricanes.size(); i++) {
+			hurricanes.get(i).draw(g);
 		}
 
 		// draw player

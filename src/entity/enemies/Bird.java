@@ -24,7 +24,7 @@ public class Bird extends Enemy {
 		width = 32;
 		height = 32;
 		cwidth = 28;
-		cheight = 28;
+		cheight = 26;
 
 		health = maxHealth = 2;
 		damage = 1;
