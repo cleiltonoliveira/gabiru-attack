@@ -190,6 +190,8 @@ public class Level1 implements GameState {
 			player.setJumping(true);
 		if (k == KeyEvent.VK_R)
 			player.setScratching();
+		if (k == KeyEvent.VK_F)
+			player.setFiring();
 	}
 
 	@Override
@@ -204,5 +206,6 @@ public class Level1 implements GameState {
 			player.setDown(false);
 		if (k == KeyEvent.VK_W || k == KeyEvent.VK_UP)
 			player.setJumping(false);
+
 	}
 }
