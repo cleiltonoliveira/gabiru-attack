@@ -33,6 +33,7 @@ public class Player extends MapObject {
 	private int hurricaneCost;
 	private int hurricaneBallDamage;
 	private ArrayList<Hurricane> hurricanes;
+//	private long hurricaneTime = 0;
 
 	// scratch
 	private boolean scratching;
@@ -71,9 +72,9 @@ public class Player extends MapObject {
 
 		health = maxHealth = 5;
 
-		hurricane = maxHurricane = 2500;
+		hurricane = maxHurricane = 10;
 
-		hurricaneCost = 200;
+		hurricaneCost = 1;
 		hurricaneBallDamage = 5;
 
 		hurricanes = new ArrayList<Hurricane>();
@@ -312,13 +313,22 @@ public class Player extends MapObject {
 		}
 
 		// hurricane attack
-		hurricane += 1;
+
+//		long elapsed1 = (System.nanoTime() - hurricaneTime) / 1000000;
+//		if (elapsed1 > 2000) {
+//			hurricane += 1;
+//
+//		}
+
 		if (hurricane > maxHurricane) {
 			hurricane = maxHurricane;
 		}
+
 		if (hurricanning && currentAction != FIREBALL) {
-			if (hurricane > hurricaneCost) {
+			if (hurricane >= hurricaneCost) {
 				hurricane -= hurricaneCost;
+
+//				hurricaneTime = System.nanoTime();
 
 				Hurricane fb = new Hurricane(tileMap, facingRight);
 				fb.setPosition(x, y);

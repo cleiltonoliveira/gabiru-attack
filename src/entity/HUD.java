@@ -21,7 +21,8 @@ public class HUD {
 		player = p;
 
 		try {
-			image = ImageIO.read(getClass().getResourceAsStream("/res/hud/hud.gif"));
+//			image = ImageIO.read(getClass().getResourceAsStream("/res/hud/hud.gif"));
+			image = ImageIO.read(getClass().getResourceAsStream("/res/hud/menubg8final.gif"));
 			font = new Font("Arial", Font.PLAIN, 14);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -33,6 +34,7 @@ public class HUD {
 		g.setFont(font);
 		g.setColor(Color.WHITE);
 		g.drawString(player.getHealth() + "/" + player.getMaxHealth(), 30, 29);
+		g.drawString(player.getHurricane() + "/" + player.getMaxHurricane(), 30, 50);
 
 	}
 }
