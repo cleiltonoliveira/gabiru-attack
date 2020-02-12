@@ -80,7 +80,7 @@ public abstract class MapObject {
 		return r1.intersects(r2);
 	}
 
-	private Rectangle getRectangle() {
+	public Rectangle getRectangle() {
 
 		return new Rectangle((int) x - cwidth, (int) y - cheight, cwidth, cheight);
 	}

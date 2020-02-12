@@ -70,7 +70,7 @@ public class Player extends MapObject {
 
 		facingRight = true;
 
-		health = maxHealth = 5;
+		health = maxHealth = 3;
 
 		hurricane = maxHurricane = 10;
 

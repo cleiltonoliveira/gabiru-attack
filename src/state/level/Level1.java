@@ -9,6 +9,7 @@ import audio.AudioPlayer;
 import entity.Enemy;
 import entity.Explosion;
 import entity.HUD;
+import entity.KeyWinner;
 import entity.Player;
 import entity.enemies.Bird;
 import entity.enemies.Slugger;
@@ -35,6 +36,8 @@ public class Level1 implements GameState {
 	private AudioPlayer bgMusic;
 
 	private HUD hud;
+
+	private KeyWinner keyWinner;
 
 	public Level1(GameStateManager gameStateManager) {
 		this.gsm = gameStateManager;
@@ -64,6 +67,9 @@ public class Level1 implements GameState {
 		explosions = new ArrayList<Explosion>();
 
 		hud = new HUD(player);
+
+		keyWinner = new KeyWinner(tileMap);
+		keyWinner.setPosition(2990, 190);
 
 		bgMusic = new AudioPlayer("/res/music/level1.mp3");
 		bgMusic.play();
@@ -136,6 +142,13 @@ public class Level1 implements GameState {
 				}
 			}
 
+			if (playerWin()) {
+
+				bgMusic.close();
+
+				gsm.setState(gsm.WINSTATE);
+			}
+
 			if (!bgMusic.isActive()) {
 				bgMusic.play();
 			}
@@ -147,6 +160,15 @@ public class Level1 implements GameState {
 			gsm.setState(gsm.GAMEOVERSTATE);
 		}
 
+	}
+
+	private boolean playerWin() {
+
+		if (player.intersects(keyWinner)) {
+
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -173,6 +195,8 @@ public class Level1 implements GameState {
 
 		// draw hud
 		hud.draw(g);
+
+		keyWinner.draw(g);
 	}
 
 	@Override
@@ -188,8 +212,8 @@ public class Level1 implements GameState {
 			player.setDown(true);
 		if (k == KeyEvent.VK_W || k == KeyEvent.VK_UP)
 			player.setJumping(true);
-		if (k == KeyEvent.VK_R)
-			player.setScratching();
+//		if (k == KeyEvent.VK_R)
+//			player.setScratching();
 		if (k == KeyEvent.VK_F)
 			player.setHurricanning();
 	}

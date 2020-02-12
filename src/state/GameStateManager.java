@@ -7,11 +7,12 @@ import state.level.Level1;
 public class GameStateManager implements GameState {
 
 	private GameState[] gameStates;
-	public static final int NUMOFSTATES = 4;
+	public static final int NUMOFSTATES = 5;
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
 	public static final int GAMEOVERSTATE = 2;
 	public static final int HELPSTATE = 3;
+	public static final int WINSTATE = 4;
 
 	private int currentState;
 
@@ -38,6 +39,9 @@ public class GameStateManager implements GameState {
 				gameStates[state] = new GameOver(this);
 			} else if (state == HELPSTATE) {
 				gameStates[state] = new HelpState(this);
+
+			} else if (state == WINSTATE) {
+				gameStates[state] = new WinState(this);
 			}
 		}
 	}
